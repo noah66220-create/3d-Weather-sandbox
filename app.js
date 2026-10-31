@@ -386,3 +386,35 @@ function loop() {
 
 // Lancement au chargement du document
 document.addEventListener('DOMContentLoaded', init);
+// Initialisation automatique au chargement de la page WebGL2
+window.addEventListener('DOMContentLoaded', () => {
+    const canvas = document.getElementById('mainCanvas');
+    const gl = canvas.getContext('webgl2', {
+        alpha: false,
+        depth: false,
+        antialias: true,
+        powerPreference: "high-performance"
+    });
+
+    if (!gl) {
+        alert("WebGL2 n'est pas supporté par votre navigateur !");
+        return;
+    }
+
+    // Dimensionnement du Canvas
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Démarrage du moteur 3D Weather Sandbox
+    if (typeof Weather3DEngine !== 'undefined') {
+        window.engine3D = new Weather3DEngine(gl, canvas);
+        window.engine3D.init();
+    } else {
+        console.error("Le module Weather3DEngine n'est pas défini dans app.js.");
+    }
+});
